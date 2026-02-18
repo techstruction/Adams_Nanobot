@@ -4,6 +4,16 @@ Track all changes, updates, skills added, and configuration changes here.
 
 ---
 
+## [2026-02-18] — Environment Simplification
+
+### Change
+- Removed three-stage deployment lifecycle (local → VPS Staging → VPS Production).
+- Project now operates as a **single local environment** on macOS (ARM64).
+- Updated `PRODUCT_LEDGER.md` to reflect this change.
+- Committed `test_kimi_reasoning.py` as a dev utility for latency benchmarking.
+
+---
+
 ## [2026-02-18] — Initial MVP Setup
 
 ### Environment
