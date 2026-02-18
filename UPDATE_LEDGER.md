@@ -1,31 +1,58 @@
 # UPDATE_LEDGER.md
 
-## Project Start
-- **Date**: 2026-02-18
-- **Phase**: Initialization
+Track all changes, updates, skills added, and configuration changes here.
 
-## System Scan (Initial)
-==================== SYSTEM ====================
-Host:    Admins-Virtual-Machine-2.local
-User:    adam (uid=502)
-Time:    Wed Feb 18 01:09:11 PST 2026
-Kernel:  Darwin 25.2.0 arm64
-Uptime:   1:09  up 2 days, 11:55, 3 users, load averages: 1.19 4.54 4.98
+---
 
-==================== HARDWARE ====================
+## [2026-02-18] — Initial MVP Setup
 
-==================== DISK ====================
-Filesystem        Size    Used   Avail Capacity iused ifree %iused  Mounted on
-/dev/disk4s1s1    95Gi    11Gi    49Gi    19%    453k  515M    0%   /
-... [Truncated for brevity, full scan in initial thread]
-==================== DONE ====================
+### Environment
+- Installed Python 3.12 (via Homebrew) and `uv` for dependency management.
+- Cloned `HKUDS/nanobot` repository and installed in editable mode (`uv pip install -e .`).
+- Ran `nanobot onboard` to initialize `~/.nanobot/config.json`.
 
-## Change History
-- [2026-02-18] Initialized `task.md`, `PRODUCT_LEDGER.md`, and `UPDATE_LEDGER.md`.
-- [2026-02-18] Defined MVP goals: Internet access (Brave), Kimi k2.5 model, and skill-building.
-- [2026-02-18] Installed Python 3.12 and `uv`.
-- [2026-02-18] Successfully installed `nanobot` core and initialized config.
-- [2026-02-18] Configured `config.json` templates for Kimi k2.5 and Brave Search.
-- [2026-02-18] Verified Kimi k2.5 model integration via Nvidia NIM.
-- [2026-02-18] Verified Brave Search integration for real-time internet access.
-- [2026-02-18] Completed MVP build for the local environment.
+### Model Configuration
+- Configured **Nvidia NIM** as the LLM provider via the `openai` provider block.
+  - `apiBase`: `https://integrate.api.nvidia.com/v1`
+  - Model: `openai/moonshotai/kimi-k2.5-instant` (instant/non-reasoning mode)
+- Configured **Brave Search** for real-time internet access.
+
+### Channels
+- Enabled **Telegram** channel (`@Adams_Tech_ClawdBot`) in `config.json`.
+- Verified `nanobot gateway` starts successfully with Telegram polling active.
+
+### Skills Added
+- **`telegram_notify`** (`nanobot/skills/telegram_notify/`)
+  - `SKILL.md`: Skill definition for sending proactive Telegram messages.
+  - `notify.py`: Helper script that reads token from `config.json` and sends a message to a given chat ID.
+
+---
+
+## [2026-02-18] — Kimi k2.5 Instant Mode Optimization
+
+### Problem
+- Default Kimi k2.5 response time was ~32 seconds due to internal "thinking" (reasoning) mode being enabled by default.
+
+### Solution
+- Added `model_overrides` to the `openai` provider spec in `nanobot/providers/registry.py`:
+  - `kimi-k2.5-instant` → sends `extra_body: {thinking: {type: disabled}}` to disable reasoning, reducing latency to ~3s.
+  - `kimi-k2.5` → keeps `temperature: 1.0` as required by the API.
+- Updated `~/.nanobot/config.json` default model to `openai/moonshotai/kimi-k2.5-instant`.
+
+### Bug Fix
+- Fixed model resolution conflict: the `openai/` prefix was bypassing provider-specific overrides. Added `openai/` to `skip_prefixes` in the `moonshot` provider spec.
+- Added `loguru` import to `litellm_provider.py` (was missing).
+- Switched project to **editable install** (`uv pip install -e .`) so local source changes take effect immediately without reinstalling.
+
+---
+
+## Files Modified
+| File | Change |
+|------|--------|
+| `~/.nanobot/config.json` | API keys, model, Telegram token |
+| `nanobot/providers/registry.py` | Kimi instant mode overrides, skip_prefixes fix |
+| `nanobot/providers/litellm_provider.py` | Added loguru import |
+| `nanobot/skills/telegram_notify/SKILL.md` | New skill |
+| `nanobot/skills/telegram_notify/notify.py` | New skill helper |
+| `PRODUCT_LEDGER.md` | Project documentation |
+| `UPDATE_LEDGER.md` | This file |

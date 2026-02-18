@@ -172,7 +172,10 @@ PROVIDERS: tuple[ProviderSpec, ...] = (
         detect_by_base_keyword="",
         default_api_base="",
         strip_model_prefix=False,
-        model_overrides=(),
+        model_overrides=(
+            ("kimi-k2.5-instant", {"model": "openai/moonshotai/kimi-k2.5", "temperature": 1.0, "extra_body": {"thinking": {"type": "disabled"}}}),
+            ("kimi-k2.5", {"temperature": 1.0}),
+        ),
     ),
 
     # OpenAI Codex: uses OAuth, not API key.
@@ -309,6 +312,7 @@ PROVIDERS: tuple[ProviderSpec, ...] = (
         default_api_base="https://api.moonshot.ai/v1",   # intl; use api.moonshot.cn for China
         strip_model_prefix=False,
         model_overrides=(
+            ("kimi-k2.5-instant", {"model": "openai/moonshotai/kimi-k2.5", "temperature": 1.0, "extra_body": {"thinking": {"type": "disabled"}}}),
             ("kimi-k2.5", {"temperature": 1.0}),
         ),
     ),
@@ -415,9 +419,9 @@ def find_gateway(
 
     # 2. Auto-detect by api_key prefix / api_base keyword
     for spec in PROVIDERS:
-        if spec.detect_by_key_prefix and api_key and api_key.startswith(spec.detect_by_key_prefix):
+        if spec.detect_by_key_prefix and api_key and hasattr(api_key, "startswith") and api_key.startswith(spec.detect_by_key_prefix):
             return spec
-        if spec.detect_by_base_keyword and api_base and spec.detect_by_base_keyword in api_base:
+        if spec.detect_by_base_keyword and api_base and hasattr(api_base, "__contains__") and spec.detect_by_base_keyword in api_base:
             return spec
 
     return None

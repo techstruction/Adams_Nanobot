@@ -4,6 +4,7 @@ import json
 import json_repair
 import os
 from typing import Any
+from loguru import logger
 
 import litellm
 from litellm import acompletion
@@ -58,13 +59,13 @@ class LiteLLMProvider(LLMProvider):
         if not spec.env_key:
             # OAuth/provider-only specs (for example: openai_codex)
             return
-
+        
         # Gateway/local overrides existing env; standard provider doesn't
         if self._gateway:
             os.environ[spec.env_key] = api_key
         else:
             os.environ.setdefault(spec.env_key, api_key)
-
+        
         # Resolve env_extras placeholders:
         #   {api_key}  → user's API key
         #   {api_base} → user's api_base, falling back to spec.default_api_base
