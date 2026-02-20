@@ -4,7 +4,7 @@ import time
 from litellm import acompletion
 
 async def test_kimi(thinking_disabled=False):
-    api_key = "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"
+    api_key = "REDACTED_NVIDIA_NIM_KEY"
     api_base = "https://integrate.api.nvidia.com/v1"
     model = "openai/moonshotai/kimi-k2.5"
     
