@@ -497,3 +497,8 @@ def list_labels():
 def check_connection():
     """Check Gmail connection (for nanobot)"""
     return gmail_manager.check_connection()
+
+if __name__ == "__main__":
+    # Test connection
+    result = check_connection()
+    print(result)
