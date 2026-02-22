@@ -1,0 +1,305 @@
+/**
+ * Nanobot Gateway Monitor - Interactive Script
+ * Real-time updates, clock, and status monitoring
+ */
+
+class GatewayMonitor {
+    constructor() {
+        this.updateInterval = null;
+        this.clockInterval = null;
+        this.activityLog = [];
+        this.init();
+    }
+
+    init() {
+        this.updateClock();
+        this.startClock();
+        this.updateStatusCards();
+        this.startDataUpdates();
+        this.addEventListeners();
+        this.logActivity('Dashboard initialized', 'success');
+    }
+
+    // Live Clock
+    updateClock() {
+        const now = new Date();
+        const timeString = now.toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: true
+        });
+        const dateString = now.toLocaleDateString('en-US', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+        
+        const clockEl = document.getElementById('live-clock');
+        if (clockEl) {
+            clockEl.textContent = timeString;
+            clockEl.setAttribute('title', dateString);
+        }
+    }
+
+    startClock() {
+        this.clockInterval = setInterval(() => this.updateClock(), 1000);
+    }
+
+    // Status Card Updates with Animation
+    updateStatusCards() {
+        const cards = document.querySelectorAll('.status-card');
+        cards.forEach(card => {
+            // Add hover effects
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-5px) scale(1.02)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+    }
+
+    // Simulated Data Updates
+    startDataUpdates() {
+        // Update every 5 seconds
+        this.updateInterval = setInterval(() => {
+            this.simulateUpdates();
+        }, 5000);
+
+        // Initial update
+        this.simulateUpdates();
+    }
+
+    simulateUpdates() {
+        // Update memory usage
+        const memoryEl = document.querySelector('.memory-percentage');
+        if (memoryEl) {
+            const usage = Math.floor(Math.random() * 30) + 40; // 40-70%
+            memoryEl.textContent = `${usage}%`;
+            this.updateProgressBar(memoryEl.closest('.status-card'), usage);
+        }
+
+        // Update API latency
+        const latencyEl = document.querySelector('.api-latency');
+        if (latencyEl) {
+            const latency = Math.floor(Math.random() * 100) + 20;
+            latencyEl.textContent = `${latency}ms`;
+            this.updateStatusColor(latencyEl, latency < 100 ? 'good' : latency < 200 ? 'warning' : 'error');
+        }
+
+        // Random activity log entries
+        if (Math.random() > 0.7) {
+            this.generateRandomActivity();
+        }
+
+        // Update connection status
+        this.updateConnectionStatus();
+    }
+
+    updateProgressBar(card, percentage) {
+        const progressBar = card?.querySelector('.progress-fill');
+        if (progressBar) {
+            progressBar.style.width = `${percentage}%`;
+            progressBar.style.background = percentage > 70 
+                ? 'linear-gradient(90deg, #ff6b6b, #ee5a5a)' 
+                : 'linear-gradient(90deg, #4facfe, #00f2fe)';
+        }
+    }
+
+    updateStatusColor(element, status) {
+        const colors = {
+            good: '#4facfe',
+            warning: '#feca57',
+            error: '#ff6b6b'
+        };
+        element.style.color = colors[status] || colors.good;
+    }
+
+    updateConnectionStatus() {
+        const indicators = document.querySelectorAll('.status-dot');
+        indicators.forEach(dot => {
+            // Randomly pulse some indicators
+            if (Math.random() > 0.8) {
+                dot.style.animation = 'none';
+                setTimeout(() => {
+                    dot.style.animation = 'pulse 2s infinite';
+                }, 100);
+            }
+        });
+    }
+
+    generateRandomActivity() {
+        const activities = [
+            { message: 'API request processed', type: 'success' },
+            { message: 'Memory cleanup completed', type: 'info' },
+            { message: 'New connection established', type: 'success' },
+            { message: 'Cache refreshed', type: 'info' },
+            { message: 'Health check passed', type: 'success' }
+        ];
+
+        const random = activities[Math.floor(Math.random() * activities.length)];
+        this.logActivity(random.message, random.type);
+    }
+
+    logActivity(message, type = 'info') {
+        const timestamp = new Date().toLocaleTimeString('en-US', { 
+            hour: '2-digit', 
+            minute: '2-digit',
+            second: '2-digit'
+        });
+        
+        this.activityLog.unshift({ message, type, timestamp });
+        if (this.activityLog.length > 10) this.activityLog.pop();
+
+        this.renderActivityLog();
+    }
+
+    renderActivityLog() {
+        const container = document.getElementById('activity-log');
+        if (!container) return;
+
+        container.innerHTML = this.activityLog.map(item => {
+            const iconClass = {
+                success: '✓',
+                error: '✗',
+                warning: '!',
+                info: 'ℹ'
+            }[item.type] || '•';
+
+            const typeClass = `activity-${item.type}`;
+            
+            return `
+                <div class="activity-item ${typeClass}">
+                    <span class="activity-icon">${iconClass}</span>
+                    <span class="activity-message">${item.message}</span>
+                    <span class="activity-time">${item.timestamp}</span>
+                </div>
+            `;
+        }).join('');
+    }
+
+    addEventListeners() {
+        // Refresh button
+        const refreshBtn = document.getElementById('refresh-btn');
+        if (refreshBtn) {
+            refreshBtn.addEventListener('click', () => {
+                refreshBtn.style.transform = 'rotate(360deg)';
+                setTimeout(() => refreshBtn.style.transform = 'rotate(0deg)', 500);
+                this.simulateUpdates();
+                this.logActivity('Manual refresh triggered', 'info');
+            });
+        }
+
+        // Export button
+        const exportBtn = document.getElementById('export-btn');
+        if (exportBtn) {
+            exportBtn.addEventListener('click', () => {
+                this.exportDashboardData();
+            });
+        }
+
+        // Card interactions
+        document.querySelectorAll('.status-card').forEach(card => {
+            card.addEventListener('click', () => {
+                card.classList.add('card-selected');
+                setTimeout(() => card.classList.remove('card-selected'), 300);
+            });
+        });
+    }
+
+    exportDashboardData() {
+        const data = {
+            timestamp: new Date().toISOString(),
+            memory: document.querySelector('.memory-percentage')?.textContent || 'N/A',
+            latency: document.querySelector('.api-latency')?.textContent || 'N/A',
+            activities: this.activityLog
+        };
+
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `gateway-report-${Date.now()}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        
+        this.logActivity('Dashboard data exported', 'success');
+    }
+
+    destroy() {
+        if (this.updateInterval) clearInterval(this.updateInterval);
+        if (this.clockInterval) clearInterval(this.clockInterval);
+    }
+}
+
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+    window.gatewayMonitor = new GatewayMonitor();
+    
+    // Add keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'r' && e.ctrlKey) {
+            e.preventDefault();
+            window.gatewayMonitor.simulateUpdates();
+        }
+        if (e.key === 'F5') {
+            e.preventDefault();
+            window.location.reload();
+        }
+    });
+});
+
+// Handle visibility change (pause updates when tab hidden)
+document.addEventListener('visibilitychange', () => {
+    if (window.gatewayMonitor) {
+        if (document.hidden) {
+            // Pause updates when tab is hidden
+            console.log('Dashboard updates paused');
+        } else {
+            // Resume when visible
+            window.gatewayMonitor.simulateUpdates();
+            console.log('Dashboard updates resumed');
+        }
+    }
+});
+
+// Add custom animations
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateX(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .activity-item {
+        animation: slideIn 0.3s ease-out;
+    }
+
+    .card-selected {
+        transform: scale(0.98) !important;
+        transition: transform 0.15s ease !important;
+    }
+
+    #refresh-btn {
+        transition: transform 0.5s ease;
+    }
+
+    .activity-success { border-left-color: #4facfe; }
+    .activity-error { border-left-color: #ff6b6b; }
+    .activity-warning { border-left-color: #feca57; }
+    .activity-info { border-left-color: #a29bfe; }
+`;
+document.head.appendChild(style);
+
+console.log('🚀 Gateway Monitor Dashboard loaded successfully!');
+console.log('Keyboard shortcuts:');
+console.log('  Ctrl+R - Refresh data');
+console.log('  F5 - Reload dashboard');
