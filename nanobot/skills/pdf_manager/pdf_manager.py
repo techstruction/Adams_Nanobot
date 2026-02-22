@@ -55,3 +55,51 @@ def read_pdf(filepath):
 def create_pdf(filepath, content):
     """Create PDF (for nanobot integration)"""
     return pdf_manager.create_pdf(filepath, content)
+## STUBS - Add missing functions needed by __init__
+
+def list_pdfs(directory=None):
+    return _manager.list_pdfs(directory)
+
+def create_pdf(filepath, content):
+    return _manager.create_pdf(filepath, content)
+
+def get_pdf_info(filepath):
+    return _manager.get_pdf_info(filepath)
+
+def search_pdfs(directory, keyword):
+    return _manager.search_pdf_files(directory, keyword)
+
+
+# Convenience functions (matching __init__ exports)
+def list_pdfs(directory=None):
+    """List PDF files (for nanobot)"""
+    return pdf_manager.list_pdfs(directory)
+
+def get_pdf_info(filepath):
+    """Get PDF metadata (for nanobot)"""
+    return pdf_manager.get_pdf_info(filepath)
+
+def search_pdfs(directory, keyword):
+    """Search in PDFs (for nanobot)"""
+    return pdf_manager.search_pdf_files(directory, keyword)
+
+def pdf_to_text(pdf_path, txt_path=None):
+    """PDF to text (for nanobot)"""
+    return pdf_manager.pdf_to_text(pdf_path, txt_path)
+
+# Convenience functions (matching __init__ exports)
+def list_pdfs(directory=None):
+    """List PDF files (for nanobot)"""
+    return pdf_manager.list_pdfs(directory)
+
+def get_pdf_info(filepath):
+    """Get PDF metadata (for nanobot)"""
+    return pdf_manager.get_pdf_info(filepath)
+
+def search_pdfs(directory, keyword):
+    """Search in PDFs (for nanobot)"""
+    return pdf_manager.search_pdf_files(directory, keyword)
+
+def pdf_to_text(pdf_path, txt_path=None):
+    """PDF to text (for nanobot)"""
+    return pdf_manager.pdf_to_text(pdf_path, txt_path)

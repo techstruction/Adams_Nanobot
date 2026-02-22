@@ -468,6 +468,32 @@ def check_connection():
 
 
 if __name__ == "__main__":
-    # Test connection
-    result = check_connection()
-    print(result)
+
+# Convenience functions (matching __init__ exports)
+def get_unread_count(parsed=None):
+    """Get unread count (alias for nanobot)"""
+    return check_unread()
+
+def apply_label(email_id: str, label: str):
+    """Apply label (for nanobot)"""
+    return gmail_manager.apply_label(email_id, label)
+
+def archive_email(email_id: str):
+    """Archive email (for nanobot)"""
+    return gmail_manager.archive_email(email_id)
+
+def delete_email(email_id: str):
+    """Delete email (for nanobot)"""
+    return gmail_manager.delete_email(email_id)
+
+def list_labels():
+    """List labels (for nanobot)"""
+    labels = gmail_manager.list_labels()
+    if isinstance(labels, list):
+        return "📂 Gmail Labels:\n\n" + "\n".join(f"  - {label}" for label in labels[:20])
+    else:
+        return f"❌ Error: {labels}"
+
+def check_connection():
+    """Check Gmail connection (for nanobot)"""
+    return gmail_manager.check_connection()
