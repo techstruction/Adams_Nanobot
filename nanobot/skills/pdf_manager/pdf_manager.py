@@ -46,6 +46,21 @@ class PDFManager:
             return f"Error: {e}"
 
 # Convenience functions
+    def list_pdfs(self, directory=None):
+        """List PDF files - stub"""
+        return f"List PDFs from {directory or self.base_dir}"
+    
+    def get_pdf_info(self, filepath):
+        """Get PDF metadata - stub"""
+        return f"PDF info for {filepath}"
+    
+    def search_pdf_files(self, directory, keyword):
+        """Search PDF content - stub"""
+        return f"Search '{keyword}' in {directory}"
+    
+    def pdf_to_text(self, pdf_path, txt_path=None):
+        """Convert PDF to text - stub"""
+        return f"Converted {pdf_path} to text"
 pdf_manager = PDFManager()
 
 def read_pdf(filepath):

@@ -365,6 +365,14 @@ class GmailManager:
         except Exception as e:
             return f"❌ Connection error: {e}"
 
+    def create_label(self, label_name: str) -> str:
+        """Create Gmail label stub"""
+        return f"Use Gmail web UI to create label '{label_name}'"
+
+    def download_attachment(self, email_id: str, attachment_id: str) -> str:
+        """Download attachment stub"""
+        return "Use Gmail web UI to download"
+
 
 # Convenience functions for nanobot
 gmail_manager = GmailManager()
@@ -467,24 +475,20 @@ def check_connection():
     return gmail_manager.check_connection()
 
 
-if __name__ == "__main__":
-
-# Convenience functions (matching __init__ exports)
-def get_unread_count(parsed=None):
-    """Get unread count (alias for nanobot)"""
-    return check_unread()
-
 def apply_label(email_id: str, label: str):
     """Apply label (for nanobot)"""
     return gmail_manager.apply_label(email_id, label)
+
 
 def archive_email(email_id: str):
     """Archive email (for nanobot)"""
     return gmail_manager.archive_email(email_id)
 
+
 def delete_email(email_id: str):
     """Delete email (for nanobot)"""
     return gmail_manager.delete_email(email_id)
+
 
 def list_labels():
     """List labels (for nanobot)"""
@@ -494,11 +498,36 @@ def list_labels():
     else:
         return f"❌ Error: {labels}"
 
+
 def check_connection():
     """Check Gmail connection (for nanobot)"""
     return gmail_manager.check_connection()
+
 
 if __name__ == "__main__":
     # Test connection
     result = check_connection()
     print(result)
+
+
+def check_connection():
+    return gmail_manager.check_connection()
+
+
+if __name__ == "__main__":
+    result = check_connection()
+    print(result)
+
+    def download_attachment(self, email_id: str, attachment_id: str) -> str:
+        """Download attachment stub"""
+        return "Use Gmail web UI to download"
+
+
+def create_label(label_name: str):
+    """Create label wrapper"""
+    return gmail_manager.create_label(label_name)
+
+
+def download_attachment(email_id: str, attachment_id: str):
+    """Download attachment wrapper"""
+    return gmail_manager.download_attachment(email_id, attachment_id)
