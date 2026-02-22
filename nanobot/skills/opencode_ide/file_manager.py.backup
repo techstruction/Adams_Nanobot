@@ -378,25 +378,17 @@ def create_file(filepath, content):
     return result["message"]
 
 
-# Convenience functions
-file_manager = FileManager()
-
-
-def create_file(filepath, content):
-    """Create file (for nanobot)"""
-    result = file_manager.create_file(filepath, content)
-    return result["message"]
-
-
 def read_file(filepath, preview_lines=None):
     """Read file (for nanobot)"""
     result = file_manager.read_file(filepath, preview_lines)
-    
-    # If preview_lines specified, add content preview
-    if preview_lines and result.get("content"):
-        return f"{result['message']}\n\n{result['content'][:500]}"
-    
     return result["message"]
+
+
+# If preview_lines specified, add content preview
+if preview_lines and result.get("content"):
+    return f"{result['message']}\n\n{result['content'][:500]}"
+
+return result["message"]
 
 
 def modify_file(filepath, operations):
@@ -428,7 +420,7 @@ def search_files(pattern, content_search):
         for match in matches:
             result += f"✓ {match['filepath']}\n"
             result += f"  Matches: {match['matches']}\n"
-            for line in match['lines'][:3]:
+            for line in match["lines"][:3]:
                 result += f"    Line {line['line']}: {line['text'][:100]}...\n"
             result += "\n"
         return result
