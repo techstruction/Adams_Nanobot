@@ -51,9 +51,9 @@
                 <span class="tab-icon">💬</span>
                 Chat
             </button>
-            <button class="tab-btn" data-tab="topology">
-                <span class="tab-icon">🕸️</span>
-                Topology
+            <button class="tab-btn" data-tab="settings">
+                <span class="tab-icon">⚙️</span>
+                Settings
             </button>
         </nav>
 
@@ -276,44 +276,56 @@
                     </div>
                 </div>
             </section>
+        </main>
 
-            <!-- TAB 6: TOPOLOGY -->
-            <section id="topology-tab" class="tab-content">
-                <div class="glass-card">
-                    <div class="card-header">
-                        <h3>🕸️ Nanobot Topology</h3>
-                        <button class="action-btn" id="refresh-topology-btn">🔄 Refresh</button>
-                    </div>
-                    <div class="card-body">
-                        <div class="topology-legend">
-                            <span class="legend-item"><span class="legend-color skill-node"></span> Skills</span>
-                            <span class="legend-item"><span class="legend-color channel-node"></span> Channels</span>
-                            <span class="legend-item"><span class="legend-color provider-node"></span> Providers</span>
-                            <span class="legend-item"><span class="legend-color tool-node"></span> Tools</span>
+            <!-- TAB 6: SETTINGS -->
+            <section id="settings-tab" class="tab-content">
+                <div class="cards-grid">
+                    <div class="glass-card settings-card">
+                        <div class="card-header">
+                            <h3>⚙️ Dashboard Settings</h3>
                         </div>
-                        <div id="topology-container">
-                            <svg id="topology-svg" width="100%" height="600"></svg>
-                        </div>
-                        <div class="topology-info">
-                            <div class="info-stats" id="topology-stats">
-                                <div class="stat-item">
-                                    <span class="stat-number" id="skill-count">0</span>
-                                    <span class="stat-label">Skills</span>
-                                </div>
-                                <div class="stat-item">
-                                    <span class="stat-number" id="channel-count">0</span>
-                                    <span class="stat-label">Channels</span>
-                                </div>
-                                <div class="stat-item">
-                                    <span class="stat-number" id="provider-count">0</span>
-                                    <span class="stat-label">Providers</span>
+                        <div class="card-body">
+                            <div class="settings-section">
+                                <h4>Appearance</h4>
+                                <div class="setting-item">
+                                    <label for="theme-select">Theme:</label>
+                                    <select id="theme-select">
+                                        <option value="dark">Dark (Default)</option>
+                                        <option value="light">Light</option>
+                                    </select>
                                 </div>
                             </div>
+                            
+                            <div class="settings-section">
+                                <h4>Refresh Settings</h4>
+                                <div class="setting-item">
+                                    <label for="refresh-interval">Auto-refresh (seconds):</label>
+                                    <input type="number" id="refresh-interval" value="5" min="1" max="60">
+                                </div>
+                            </div>
+                            
+                            <div class="settings-section">
+                                <h4>API Configuration</h4>
+                                <div class="setting-item">
+                                    <label for="api-endpoint">API Endpoint:</label>
+                                    <input type="text" id="api-endpoint" value="/dashboard/api" readonly>
+                                </div>
+                            </div>
+                            
+                            <div class="settings-section">
+                                <h4>Display Settings</h4>
+                                <div class="setting-item">
+                                    <label for="max-items">Max items per page:</label>
+                                    <input type="number" id="max-items" value="50" min="10" max="200">
+                                </div>
+                            </div>
+                            
+                            <button class="save-settings-btn" onclick="saveSettings()">Save Settings</button>
                         </div>
                     </div>
                 </div>
             </section>
-        </main>
 
         <footer class="dashboard-footer">
             <p>Nanobot Dashboard v2.0 | <span id="footer-time"></span></p>

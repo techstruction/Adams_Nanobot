@@ -193,6 +193,80 @@ class DashboardServer:
             return await get_topology()
 
         # Mount router
+
+        # Cloudflare Tunnel monitoring
+        @self.router.get("/cloudflare-tunnel")
+        async def get_cloudflare_tunnel():
+            """Check Cloudflare Tunnel status"""
+            import subprocess
+            import psutil
+            from pathlib import Path
+            
+            status = {
+                "status": "not_running",
+                "tunnel_id": None,
+                "uptime": None,
+                "pid": None,
+                "error": None
+            }
+            
+            # 1. Check if cloudflared process is running
+            try:
+                # Try to find cloudflared process
+                for proc in psutil.process_iter(['pid', 'name', 'cmdline']):
+                    if 'cloudflared' in proc.info['name'] or (proc.info['cmdline'] and any('cloudflared' in c for c in proc.info['cmdline'])):
+                        status["status"] = "running"
+                        status["pid"] = proc.info['pid']
+                        status["uptime"] = int(time.time() - proc.create_time())
+                        break
+            except Exception as e:
+                status["error"] = f"Process check failed: {str(e)}"
+            
+            # 2. Try to get tunnel ID from config
+            # Common locations: ~/.cloudflared/config.yml, ~/.cloudflared/cert.pem
+            try:
+                config_paths = [
+                    Path.home() / ".cloudflared" / "config.yml",
+                    Path.home() / ".cloudflared" / "cert.pem",
+                    Path("/etc/cloudflared/config.yml")
+                ]
+                
+                for config_path in config_paths:
+                    if config_path.exists():
+                        with open(config_path, 'r') as f:
+                            content = f.read()
+                            # Try to extract tunnel name/ID from config
+                            import re
+                            tunnel_match = re.search(r'tunnel:\s*([\w-]+)', content)
+                            if tunnel_match:
+                                status["tunnel_id"] = tunnel_match.group(1)
+                                break
+            except Exception as e:
+                if not status["error"]:
+                    status["error"] = f"Config read failed: {str(e)}"
+            
+            # 3. Try running cloudflared tunnel info if available
+            if status["status"] == "running":
+                try:
+                    result = subprocess.run(
+                        ["cloudflared", "tunnel", "list"],
+                        capture_output=True,
+                        text=True,
+                        timeout=5
+                    )
+                    if result.returncode == 0:
+                        output = result.stdout
+                        # Parse first tunnel if available
+                        lines = output.strip().split('\n')
+                        if len(lines) > 2:  # Header + at least one tunnel
+                            tunnel_line = lines[2]  # Skip headers
+                            parts = tunnel_line.split()
+                            if len(parts) > 0:
+                                status["tunnel_id"] = parts[0]
+                except:
+                    pass  # Don't fail if cloudflared command not available
+            
+            return status
         self.app.include_router(self.router, prefix="/dashboard/api")
 
     def _scan_nanobot_structure(self) -> Dict[str, Any]:

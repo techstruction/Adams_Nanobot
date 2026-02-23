@@ -774,3 +774,69 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 console.log('🚀 Nanobot Dashboard initialized successfully!');
+
+// Settings tab functionality
+function saveSettings() {
+    const settings = {
+        theme: document.getElementById('theme-select').value,
+        refreshInterval: parseInt(document.getElementById('refresh-interval').value),
+        maxItems: parseInt(document.getElementById('max-items').value)
+    };
+    
+    // Save to localStorage for persistence
+    localStorage.setItem('dashboardSettings', JSON.stringify(settings));
+    
+    // Apply theme immediately
+    applyTheme(settings.theme);
+    
+    // Update dashboard refresh interval if active
+    if (window.dashboard) {
+        window.dashboard.refreshInterval = settings.refreshInterval;
+    }
+    
+    // Show success feedback
+    const btn = document.querySelector('.save-settings-btn');
+    const originalText = btn.textContent;
+    btn.textContent = '✅ Saved!';
+    btn.style.background = 'var(--success)';
+    
+    setTimeout(() => {
+        btn.textContent = originalText;
+        btn.style.background = '';
+    }, 2000);
+}
+
+function applyTheme(theme) {
+    if (theme === 'light') {
+        document.documentElement.style.setProperty('--bg-primary', '#ffffff');
+        document.documentElement.style.setProperty('--bg-secondary', '#f8f9fa');
+        document.documentElement.style.setProperty('--text-primary', '#000000');
+        document.documentElement.style.setProperty('--text-secondary', '#6c757d');
+    } else {
+        // Reset to dark theme (default)
+        document.documentElement.style.setProperty('--bg-primary', '#0a0a0f');
+        document.documentElement.style.setProperty('--bg-secondary', '#12121a');
+        document.documentElement.style.setProperty('--text-primary', '#ffffff');
+        document.documentElement.style.setProperty('--text-secondary', 'rgba(255, 255, 255, 0.6)');
+    }
+}
+
+function loadSettings() {
+    const saved = localStorage.getItem('dashboardSettings');
+    if (saved) {
+        try {
+            const settings = JSON.parse(saved);
+            document.getElementById('theme-select').value = settings.theme || 'dark';
+            document.getElementById('refresh-interval').value = settings.refreshInterval || 5;
+            document.getElementById('max-items').value = settings.maxItems || 50;
+            applyTheme(settings.theme || 'dark');
+        } catch (e) {
+            console.error('Failed to load settings:', e);
+        }
+    }
+}
+
+// Load settings when dashboard initializes
+document.addEventListener('DOMContentLoaded', () => {
+    loadSettings();
+});
