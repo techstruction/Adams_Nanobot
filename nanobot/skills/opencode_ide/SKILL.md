@@ -1,3 +1,9 @@
+---
+name: opencode_ide
+description: Advanced IDE integration for reading, writing, and editing codebases with awareness of project structure.
+metadata: {"nanobot":{"emoji":"💻"}}
+---
+
 # OpenCode IDE Tool
 
 Self-modifying IDE integration for nanobot - Write code, manage git, and control the OpenCode editor.

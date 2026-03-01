@@ -131,10 +131,7 @@ start_dashboard() {
     cd "$NANOBOT_DIR"
     
     # Run in background
-    nohup "$VENV_PYTHON" -m uvicorn nanobot.skills.dashboard.server:app \
-        --host 0.0.0.0 \
-        --port $DASHBOARD_PORT \
-        --reload \
+    nohup "$VENV_PYTHON" "$NANOBOT_DIR/nanobot/skills/dashboard/server.py" "$WORKSPACE_DIR" \
         > "$WORKSPACE_DIR/logs/dashboard.log" 2>&1 &
     
     local dashboard_pid=$!

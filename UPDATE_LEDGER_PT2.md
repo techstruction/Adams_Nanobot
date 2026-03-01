@@ -179,3 +179,16 @@ jq -r '
   "model=" + (.model // "")
 ' "$CFG"
 
+
+### Heartbeat Management
+```bash
+# Check status and pending tasks
+nanobot heartbeat status
+
+# Manually trigger a heartbeat tick
+nanobot heartbeat trigger
+```
+
+---
+
+*Updated 2026-03-01 - Heartbeat Infrastructure Active*

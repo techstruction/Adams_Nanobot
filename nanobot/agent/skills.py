@@ -6,8 +6,11 @@ import re
 import shutil
 from pathlib import Path
 
+from loguru import logger
+
 # Default builtin skills directory (relative to this file)
 BUILTIN_SKILLS_DIR = Path(__file__).parent.parent / "skills"
+logger.debug(f"BUILTIN_SKILLS_DIR: {BUILTIN_SKILLS_DIR}")
 
 
 class SkillsLoader:

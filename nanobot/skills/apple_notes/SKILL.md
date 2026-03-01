@@ -1,3 +1,9 @@
+---
+name: apple_notes
+description: Complete Apple Notes integration - List, read, search, create, and append to notes via AppleScript.
+metadata: {"nanobot":{"emoji":"🍎","always":true}}
+---
+
 # Apple Notes Skill
 
 Complete Apple Notes integration for nanobot - List, read, search, create, and append to notes.
@@ -157,7 +163,7 @@ Append to note 'Journal 2026-02-21': Had a productive coding session today
 
 ### Search for project notes
 ```
-Find all notes containing 'nanobot' and 'dashboard'
+Find all notes containing 'nanobot'
 ```
 
 ## Performance

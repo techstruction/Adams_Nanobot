@@ -1,3 +1,9 @@
+---
+name: dashboard
+description: Nanobot Dashboard - Real-time monitoring, topology visualization, and control interface.
+metadata: {"nanobot":{"emoji":"📊"}}
+---
+
 # Dashboard Skill
 
 Serve an interactive web-based dashboard for monitoring and managing nanobot.
@@ -16,8 +22,6 @@ Serve an interactive web-based dashboard for monitoring and managing nanobot.
 ```bash
 # Start the dashboard server
 nanobot dashboard
-
-# Dashboard will be available at http://localhost:18790/dashboard
 ```
 
 ## Data Storage

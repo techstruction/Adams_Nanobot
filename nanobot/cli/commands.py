@@ -249,6 +249,29 @@ Information about the user goes here.
         if not file_path.exists():
             file_path.write_text(content)
             console.print(f"  [dim]Created {filename}[/dim]")
+    
+    # Create HEARTBEAT.md
+    heartbeat_file = workspace / "HEARTBEAT.md"
+    if not heartbeat_file.exists():
+        heartbeat_file.write_text("""# Heartbeat Tasks
+
+This file contains tasks for the agent to check periodically.
+The agent reads this file every 30 minutes and follows the instructions.
+
+## Active Tasks
+
+- [ ] Check for any pending reminders or follow-ups.
+- [ ] Ensure all systems are running smoothly.
+
+## Instructions for Agent
+
+1. Read this file.
+2. Execute any uncompleted tasks (marked with `[ ]`).
+3. If a task is completed, mark it with `[x]`.
+4. If you perform an action, briefly log it in `memory/HISTORY.md`.
+5. If nothing needs attention, reply with `HEARTBEAT_OK`.
+""")
+        console.print("  [dim]Created HEARTBEAT.md[/dim]")
 
     # Create memory directory and MEMORY.md
     memory_dir = workspace / "memory"
@@ -407,7 +430,7 @@ def gateway(
     heartbeat = HeartbeatService(
         workspace=config.workspace_path,
         on_heartbeat=on_heartbeat,
-        interval_s=30 * 60,  # 30 minutes
+        interval_s=15 * 60,  # 15 minutes
         enabled=True,
     )
 
@@ -423,7 +446,7 @@ def gateway(
     if cron_status["jobs"] > 0:
         console.print(f"[green]✓[/green] Cron: {cron_status['jobs']} scheduled jobs")
 
-    console.print(f"[green]✓[/green] Heartbeat: every 30m")
+    console.print(f"[green]✓[/green] Heartbeat: every 15m")
 
     async def run():
         try:
@@ -912,6 +935,72 @@ def cron_run(
         console.print(f"[green]✓[/green] Job executed")
     else:
         console.print(f"[red]Failed to run job {job_id}[/red]")
+
+
+# ============================================================================
+# Heartbeat Commands
+# ============================================================================
+
+heartbeat_app = typer.Typer(help="Manage heartbeat service")
+app.add_typer(heartbeat_app, name="heartbeat")
+
+
+@heartbeat_app.command("status")
+def heartbeat_status():
+    """Show heartbeat status."""
+    from nanobot.config.loader import load_config
+    from nanobot.heartbeat.service import HEARTBEAT_PROMPT
+    
+    config = load_config()
+    heartbeat_file = config.workspace_path / "HEARTBEAT.md"
+    
+    console.print(f"{__logo__} Heartbeat Status\n")
+    console.print(f"Interval: 15 minutes")
+    console.print(f"File: {heartbeat_file} {'[green]✓[/green]' if heartbeat_file.exists() else '[red]✗[/red]'}")
+    
+    if heartbeat_file.exists():
+        content = heartbeat_file.read_text()
+        tasks = [line for line in content.split("\n") if "[ ]" in line]
+        if tasks:
+            console.print(f"Pending Tasks: {len(tasks)}")
+            for t in tasks:
+                console.print(f"  {t.strip()}")
+        else:
+            console.print("Pending Tasks: 0")
+
+
+@heartbeat_app.command("trigger")
+def heartbeat_trigger(
+    now: bool = typer.Option(True, "--now", help="Trigger a heartbeat tick immediately"),
+):
+    """Trigger a heartbeat tick manually."""
+    from nanobot.config.loader import load_config, get_data_dir
+    from nanobot.bus.queue import MessageBus
+    from nanobot.agent.loop import AgentLoop
+    from nanobot.cron.service import CronService
+    from nanobot.heartbeat.service import HEARTBEAT_PROMPT
+    
+    config = load_config()
+    bus = MessageBus()
+    provider = _make_provider(config)
+    cron_store_path = get_data_dir() / "cron" / "jobs.json"
+    cron = CronService(cron_store_path)
+    
+    agent = AgentLoop(
+        bus=bus,
+        provider=provider,
+        workspace=config.workspace_path,
+        model=config.agents.defaults.model,
+        cron_service=cron,
+    )
+    
+    async def run():
+        console.print("[dim]Triggering heartbeat...[/dim]")
+        response = await agent.process_direct(HEARTBEAT_PROMPT, session_key="heartbeat")
+        _print_agent_response(response, render_markdown=True)
+        await agent.close_mcp()
+
+    asyncio.run(run())
 
 
 # ============================================================================

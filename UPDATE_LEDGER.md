@@ -508,5 +508,78 @@ Dashboard v2.0 "Aurora" represents a major milestone for nanobot, providing a be
 
 ---
 
-*Released with ❤️ by the nanobot team*
-*Version 2.0.0 - Aurora Dashboard*
+## [2026-03-01] — Heartbeat Functionality (NanoClaw Heartbeat)
+
+### Overview
+Implemented a proactive "heartbeat" mechanism inspired by OpenClaw to ensure tasks are monitored and background actions are taken without direct user prompting.
+
+### New Features
+
+#### ★ Heartbeat Service Activation
+- Activated the dormant `HeartbeatService` in `nanobot/heartbeat/service.py`.
+- Configured default interval to 15 minutes.
+- Integrated heartbeat prompt handling in the agent loop.
+
+#### ★ Heartbeat Skill (`nanobot/skills/heartbeat/`)
+- Created a dedicated skill definition (`SKILL.md`) to instruct the agent on managing `HEARTBEAT.md`.
+- Teaches the agent to read, execute, and mark tasks (`[ ]` → `[x]`) as completed.
+
+#### ★ CLI Commands
+- Added `nanobot heartbeat status`: Displays service status and pending tasks.
+- Added `nanobot heartbeat trigger`: Manually initiates a heartbeat tick for immediate processing.
+
+#### ★ Onboarding & Workspace Integration
+- Updated `onboard` command and `_create_workspace_templates` to automatically deploy a `HEARTBEAT.md` file.
+- `HEARTBEAT.md` acts as the persistent task list for background operations.
+
+### Files Modified
+| File | Change |
+|------|--------|
+| `nanobot/cli/commands.py` | Added heartbeat CLI app/commands & onboard templates |
+| `nanobot/skills/heartbeat/SKILL.md` | New skill for heartbeat management |
+| `~/.nanobot/workspace/HEARTBEAT.md` | New task tracking file |
+| `UPDATE_LEDGER.md` | This file |
+
+### Verification
+- Verified `heartbeat status` and `heartbeat trigger` via virtual environment.
+- Confirmed agent correctly modifies `HEARTBEAT.md` and logs to `memory/HISTORY.md`.
+
+---
+
+*Released by Antigravity*
+*Heartbeat Functionality - "NanoClaw Pulse"*
+
+---
+
+## [2026-03-01] — Antigravity Skill (Self-Evolution)
+
+### Overview
+Introduced the "Antigravity Skill", a meta-orchestration layer that allows NanoClaw to use background sub-agents for specialized, high-autonomy coding and self-improvement of its own skills.
+
+### New Features
+
+#### ★ Antigravity Skill (`nanobot/skills/antigravity/`)
+- Created `SKILL.md` defining the "Antigravity" persona (Senior Staff Engineer).
+- Outlined a structured workflow for skill self-improvement: Audit → Analyze → Implement → Validate.
+- Teaches the agent to delegate complex development tasks to background sub-agents.
+
+#### ★ Sub-agent Persona Enhancement
+- Modified `nanobot/agent/subagent.py` to recognize the "Antigravity" label.
+- Injected a specialized, high-autonomy system prompt for sub-agents running in Antigravity mode, focused on expert coding and proactive codebase improvement.
+
+### Files Modified
+| File | Change |
+|------|--------|
+| `nanobot/skills/antigravity/SKILL.md` | New skill for self-evolution and orchestration |
+| `nanobot/agent/subagent.py` | Added Antigravity persona to sub-agent prompt builder |
+| `ANTIGRAVITY_GUIDE.md` | New comprehensive usage guide |
+| `UPDATE_LEDGER.md` | This file |
+
+### Verification
+- Triggered sub-agent generation via manual commands.
+- Verified system prompt injection logic in `subagent.py`.
+
+---
+
+*Released by Antigravity*
+*Self-Evolution Suite - "NanoClaw Ascend"*

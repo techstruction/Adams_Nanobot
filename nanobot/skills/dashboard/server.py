@@ -280,7 +280,7 @@ class DashboardServer:
         }
 
         # Get skills
-        skills_dir = Path("/Users/adam/Documents/Nanobot/nanobot/skills")
+        skills_dir = Path(__file__).parent.parent.parent / "skills"
         if skills_dir.exists():
             for skill_dir in skills_dir.iterdir():
                 if skill_dir.is_dir() and (skill_dir / "SKILL.md").exists():

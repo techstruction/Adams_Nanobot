@@ -116,7 +116,7 @@ class SubagentManager:
             tools.register(WebFetchTool())
             
             # Build messages with subagent-specific prompt
-            system_prompt = self._build_subagent_prompt(task)
+            system_prompt = self._build_subagent_prompt(task, label=label)
             messages: list[dict[str, Any]] = [
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": task},
@@ -215,26 +215,42 @@ Summarize this naturally for the user. Keep it brief (1-2 sentences). Do not men
         await self.bus.publish_inbound(msg)
         logger.debug(f"Subagent [{task_id}] announced result to {origin['channel']}:{origin['chat_id']}")
     
-    def _build_subagent_prompt(self, task: str) -> str:
+    def _build_subagent_prompt(self, task: str, label: str | None = None) -> str:
         """Build a focused system prompt for the subagent."""
         from datetime import datetime
         import time as _time
+        from nanobot.agent.skills import BUILTIN_SKILLS_DIR
         now = datetime.now().strftime("%Y-%m-%d %H:%M (%A)")
         tz = _time.strftime("%Z") or "UTC"
 
-        return f"""# Subagent
+        prompt = f"""# Subagent
 
 ## Current Time
 {now} ({tz})
 
 You are a subagent spawned by the main agent to complete a specific task.
+"""
 
+        if label and ("antigravity" in label.lower() or "antigravity" in task.lower()):
+            prompt += """
+## Antigravity Persona (Expert Coder)
+You are operating in **Antigravity Mode**.
+- You are a Senior Staff Software Engineer.
+- You write production-ready, highly optimized, and clean code.
+- You follow the 3-layer architecture (Directive, Orchestration, Execution).
+- You are autonomous and proactive in fixing secondary issues you encounter (e.g., typos, missing imports).
+- Your goal is not just to complete the task, but to improve the codebase.
+"""
+        else:
+            prompt += """
 ## Rules
 1. Stay focused - complete only the assigned task, nothing else
 2. Your final response will be reported back to the main agent
 3. Do not initiate conversations or take on side tasks
 4. Be concise but informative in your findings
+"""
 
+        prompt += f"""
 ## What You Can Do
 - Read and write files in the workspace
 - Execute shell commands
@@ -248,9 +264,13 @@ You are a subagent spawned by the main agent to complete a specific task.
 
 ## Workspace
 Your workspace is at: {self.workspace}
-Skills are available at: {self.workspace}/skills/ (read SKILL.md files as needed)
+Skills are available at:
+- Built-in: {BUILTIN_SKILLS_DIR}
+- Workspace: {self.workspace}/skills/
+(read SKILL.md files at these locations using read_file tool as needed)
 
 When you have completed the task, provide a clear summary of your findings or actions."""
+        return prompt
     
     def get_running_count(self) -> int:
         """Return the number of currently running subagents."""

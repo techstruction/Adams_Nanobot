@@ -1,0 +1,32 @@
+2026-03-01 10:20:51.114 | DEBUG    | nanobot.agent.skills:<module>:13 - BUILTIN_SKILLS_DIR: /Users/adam/Documents/Nanobot/nanobot/skills
+🐈 Starting nanobot gateway on port 18790...
+2026-03-01 10:20:51.243 | INFO     | nanobot.channels.manager:_init_channels:46 - Telegram channel enabled
+✓ Channels enabled: telegram
+✓ Heartbeat: every 15m
+2026-03-01 10:20:51.245 | INFO     | nanobot.cron.service:start:160 - Cron service started with 0 jobs
+2026-03-01 10:20:51.245 | INFO     | nanobot.heartbeat.service:start:81 - Heartbeat started (every 900s)
+2026-03-01 10:20:51.245 | INFO     | nanobot.agent.loop:run:211 - Agent loop started
+2026-03-01 10:20:51.245 | INFO     | nanobot.channels.manager:start_all:159 - Starting telegram channel...
+2026-03-01 10:20:51.245 | INFO     | nanobot.channels.manager:_dispatch_outbound:187 - Outbound dispatcher started
+2026-03-01 10:20:51.252 | INFO     | nanobot.channels.telegram:start:160 - Starting Telegram bot (polling mode)...
+2026-03-01 10:20:52.006 | INFO     | nanobot.channels.telegram:start:168 - Telegram bot @Adams_Tech_ClawdBot connected
+2026-03-01 10:20:52.283 | DEBUG    | nanobot.channels.telegram:start:172 - Telegram bot commands registered
+2026-03-01 10:35:51.260 | INFO     | nanobot.heartbeat.service:_tick:111 - Heartbeat: checking for tasks...
+2026-03-01 10:35:51.263 | INFO     | nanobot.agent.loop:_process_message:263 - Processing message from cli:user: Read HEARTBEAT.md in your workspace (if it exists).
+Follow any instructions or t...
+2026-03-01 10:35:52.674 | INFO     | nanobot.agent.loop:_run_agent_loop:195 - Tool call: read_file({"path": "/Users/adam/.nanobot/workspace/HEARTBEAT.md"})
+2026-03-01 10:35:56.253 | INFO     | nanobot.agent.loop:_run_agent_loop:195 - Tool call: message({"content": "HEARTBEAT_OK"})
+2026-03-01 10:35:56.255 | WARNING  | nanobot.channels.manager:_dispatch_outbound:203 - Unknown channel: cli
+2026-03-01 10:35:58.688 | INFO     | nanobot.agent.loop:_run_agent_loop:195 - Tool call: write_file({"path": "/Users/adam/.nanobot/workspace/memory/HISTORY.md", "content": "Heartbeat check: All systems are running smoothly. No pending reminders or follow-ups."})
+2026-03-01 10:35:59.449 | INFO     | nanobot.agent.loop:_run_agent_loop:195 - Tool call: message({"content": "HEARTBEAT_OK"})
+2026-03-01 10:35:59.451 | WARNING  | nanobot.channels.manager:_dispatch_outbound:203 - Unknown channel: cli
+2026-03-01 10:36:00.171 | INFO     | nanobot.agent.loop:_run_agent_loop:195 - Tool call: read_file({"path": "/Users/adam/.nanobot/workspace/memory/HISTORY.md"})
+2026-03-01 10:36:01.332 | INFO     | nanobot.agent.loop:_process_message:306 - Response to cli:user: The results indicate that all systems are running smoothly and there are no pending reminders or follow-ups. In this cas...
+2026-03-01 10:36:01.333 | INFO     | nanobot.heartbeat.service:_tick:119 - Heartbeat: OK (no action needed)
+2026-03-01 10:51:01.343 | INFO     | nanobot.heartbeat.service:_tick:111 - Heartbeat: checking for tasks...
+2026-03-01 10:51:01.345 | INFO     | nanobot.agent.loop:_process_message:263 - Processing message from cli:user: Read HEARTBEAT.md in your workspace (if it exists).
+Follow any instructions or t...
+2026-03-01 10:51:13.619 | INFO     | nanobot.agent.loop:_run_agent_loop:195 - Tool call: read_file({"path": "/Users/adam/.nanobot/workspace/HEARTBEAT.md"})
+2026-03-01 10:51:15.597 | INFO     | nanobot.agent.loop:_run_agent_loop:195 - Tool call: write_file({"path": "/Users/adam/.nanobot/workspace/memory/HISTORY.md", "content": "Logged completion of tasks in HEARTBEAT.md"})
+2026-03-01 10:51:22.367 | INFO     | nanobot.agent.loop:_process_message:306 - Response to cli:user: The instructions in HEARTBEAT.md have been followed, and all tasks are marked as completed. The agent has also logged th...
+2026-03-01 10:51:22.369 | INFO     | nanobot.heartbeat.service:_tick:119 - Heartbeat: OK (no action needed)

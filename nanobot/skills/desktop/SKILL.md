@@ -1,3 +1,9 @@
+---
+name: desktop
+description: macOS Desktop Interaction - Screen capture, window management, and GUI automation.
+metadata: {"nanobot":{"emoji":"🖥️"}}
+---
+
 # Desktop Interaction Skill
 
 This skill gives you the ability to interact with the macOS desktop environment.
